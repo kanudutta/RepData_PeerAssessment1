@@ -1,37 +1,16 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-
 ## Loading required libraries
-```{r}
-
 library(dplyr)
 library(ggplot2)
 packageVersion("dplyr")
-
-```
-
-## Loading and preprocessing the data
-
-
-```{r}
 mydf <- read.csv("activity.csv",stringsAsFactors = FALSE)
 mydf2 <- tbl_df(mydf)
 mydf4 <- tbl_df(mydf)
 mydf3 <- filter(mydf2,!is.na(steps))
 
-```
-
 ## What is mean total number of steps taken per day?
 
- 1. Make a histogram of the total number of steps taken each day
- 2. Calculate and report the mean and median total number of steps taken per day
-
-
-```{r}
+#1. Make a histogram of the total number of steps taken each day
+#2. Calculate and report the mean and median total number of steps taken per day
 
 by_date <- group_by(mydf3,date)
 sumSteps <- summarize(by_date, sum(steps))
@@ -40,16 +19,10 @@ hist(sumSteps[[2]],breaks=10,col="Green",main="Total steps each Day", xlab="")
 print(mean(sumSteps$TotalSteps))
 print(median(sumSteps$TotalSteps))
 
-```
-
 
 ## What is the average daily activity pattern?
 
- 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
-
-
-
-```{r}
+#1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
 by_interval <- group_by(mydf3,interval)
 meanSteps <- summarize(by_interval, mean(steps))
@@ -61,19 +34,14 @@ plot(meanSteps$interval,meanSteps$AvgSteps,type='l', xlab="5-minute Interval", y
 
 print(mydf3[mydf3[,1]==max(mydf3[1]),][,c(1,3)])
 
-```
-
-```{r}
 
 # Calculate and report the total number of missing values in the dataset 
 
 print(nrow(mydf2)-nrow(mydf3))
 
-```
 
 ## Imputing missing values
 
-```{r}
 # Devise a strategy for filling in all of the missing values in the dataset. 
 
 for (i in 1:nrow(meanSteps)){
@@ -89,20 +57,14 @@ for (i in 1:nrow(meanSteps)){
 by_date2 <- group_by(mydf4,date)
 sumSteps2 <- summarize(by_date2, sum(steps))
 names(sumSteps2) [2] <- c("TotalSteps")
-hist(sumSteps2[[2]],breaks=10,col="blue",main="Total steps each Day with imputed data")
+hist(sumSteps2[[2]],breaks=10,col="blue",main="Total steps each Day with imputed data",xlab="")
 print(mean(sumSteps2$TotalSteps))
 print(median(sumSteps2$TotalSteps))
 
 # Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-# The mean steps were used as missing value, the median has shifted slightly, the mean remains the same. The data has moved closer to mean.
-```
-
 
 ## Are there differences in activity patterns between weekdays and weekends?
-
-```{r}
-
 
 write.csv(mydf4, file = "mydf5.csv")
 mydf5 <- read.csv("mydf5.csv",stringsAsFactors = FALSE)
@@ -139,4 +101,3 @@ a <- a + geom_smooth()
 a <- a + xlab("Interval") + ylab("Number of Steps") + ggtitle("Weekday")
 a
 
-```
